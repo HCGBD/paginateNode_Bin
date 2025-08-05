@@ -2,6 +2,7 @@
 
 // Importe le modele Mongoose pour les Auteurs. C'est notre interface avec la collection 'auteurs' dans MongoDB.
 const Auteurs = require("../models/Auteurs");
+const AutheurValidator = require("../validators/AutheursValidator");
 
 // --- Fonctions du Controleur ---
 
@@ -14,10 +15,23 @@ const create = async (req, res) => {
   try {
     // Extrait les proprietes nom, prenom et dateNaiss du corps de la requete.
     let { nom, prenom, dateNaiss } = req.body;
+
     // Convertit la date de naissance (qui est une chaine de caracteres) en un format de date valide.
     dateNaiss = Date.parse(dateNaiss);
+    const dataInsert = { nom, prenom, dateNaiss };
     // Utilise la methode statique create de Mongoose pour creer et sauvegarder un nouvel auteur en une seule etape.
-    const data = await Auteurs.create({ nom, prenom, dateNaiss });
+
+    const { error, value } =  AutheurValidator.validate(req.body, {
+      abortEarly: false,
+    });
+
+    if (error) {
+      const message = error.details.map((err)=>err.message)
+      res.status(401).json(message);
+    } 
+      const data = await Auteurs.create(value);
+    
+
     // Renvoie une reponse avec le statut 201 (Created) et les donnees de l'auteur cree au format JSON.
     res.status(201).json(data);
   } catch (error) {
@@ -74,24 +88,25 @@ const listPagi = async (req, res) => {
       page,
       limit,
       lean: true, // Optimisation : renvoie des objets JS simples au lieu de documents Mongoose complets.
-      customLabels: { // Personnalise les noms des cles dans la reponse JSON.
-        totalDocs: 'total',
-        docs: 'Auteurs',
-        limit: 'limit',
-        page: 'page',
-        nextPage: 'next',
-        prevPage: 'prev',
-        totalPages: 'pages',
-        pagingCounter: 'serial',
-        meta: 'pagination' // Regroupe toutes les metadonnees de pagination dans un objet 'pagination'.
-      }
+      customLabels: {
+        // Personnalise les noms des cles dans la reponse JSON.
+        totalDocs: "total",
+        docs: "Auteurs",
+        limit: "limit",
+        page: "page",
+        nextPage: "next",
+        prevPage: "prev",
+        totalPages: "pages",
+        pagingCounter: "serial",
+        meta: "pagination", // Regroupe toutes les metadonnees de pagination dans un objet 'pagination'.
+      },
     };
 
     // Appelle la methode paginate du modele Auteurs pour recuperer les donnees.
     const result = await Auteurs.paginate({}, options);
 
     // Construit l'URL de base pour les liens de navigation.
-    const baseUrl = `${req.protocol}://${req.get('host')}${req.baseUrl}`;
+    const baseUrl = `${req.protocol}://${req.get("host")}${req.baseUrl}`;
     const makeLink = (p) => `${baseUrl}?page=${p}&limit=${limit}`;
 
     // Ajoute les liens de navigation (self, next, prev, first, last) a l'objet de pagination.
@@ -100,12 +115,11 @@ const listPagi = async (req, res) => {
       next: result.pagination.next ? makeLink(result.pagination.next) : null,
       prev: result.pagination.prev ? makeLink(result.pagination.prev) : null,
       first: makeLink(1),
-      last: makeLink(result.pagination.pages)
+      last: makeLink(result.pagination.pages),
     };
 
     // Renvoie le resultat complet (contenant les auteurs et les informations de pagination) au format JSON.
     res.json(result);
-    
   } catch (err) {
     // En cas d'erreur, renvoie un statut 500 (Erreur Interne du Serveur) et le message d'erreur.
     res.status(500).json({ error: err.message });
@@ -158,5 +172,5 @@ module.exports = {
   listById,
   update,
   deleteA,
-  listPagi
+  listPagi,
 };
