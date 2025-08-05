@@ -62,55 +62,55 @@ const deleteL = async (req, res)=>{
 }
 
 
-// const getLivresPagines = async (req, res) => {
-//   try {
-//     let { page = 1, limit = 10 } = req.query;  // valeurs par défaut : page 1, 10 résultats par page
+const getLivresPagines = async (req, res) => {
+  try {
+    let { page = 1, limit = 10 } = req.query;  // valeurs par défaut : page 1, 10 résultats par page
 
-//     page = parseInt(page);
-//     limit = parseInt(limit);
+    page = parseInt(page);
+    limit = parseInt(limit);
 
-//     const skip = (page - 1) * limit;
+    const skip = (page - 1) * limit;
 
-//     // Récupérer livres avec pagination
-//     const livres = await Livres.find()
-//       .skip(skip)
-//       .limit(limit);
+    // Récupérer livres avec pagination
+    const livres = await Livres.find()
+      .skip(skip)
+      .limit(limit);
 
-//     // Facultatif : récupérer nombre total de documents pour info front
-//     const totalDocuments = await Livres.countDocuments();
+    // Facultatif : récupérer nombre total de documents pour info front
+    const totalDocuments = await Livres.countDocuments();
 
-//     res.json({
-//       page,
-//       limit,
-//       totalPages: Math.ceil(totalDocuments / limit),
-//       totalDocuments,
-//       data: livres
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: "Erreur serveur" });
-//   }
-// };
+    res.json({
+      page,
+      limit,
+      totalPages: Math.ceil(totalDocuments / limit),
+      totalDocuments,
+      data: livres
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erreur serveur" });
+  }
+};
 
 
 //ma methode pagination
-const paginationL = async (req, res)=>{
-    try {
-        let {page =1, limit=10} = req.query;
-        const page1 = parseInt(page)
-        const limit1 = parseInt(limit)
+// const paginationL = async (req, res)=>{
+//     try {
+//         let {page =1, limit=10} = req.query;
+//         const page1 = parseInt(page)
+//         const limit1 = parseInt(limit)
 
-        const skip = (page1 - 1) * limit1
+//         const skip = (page1 - 1) * limit1
 
-        const dos= Livres.find()
-        .skip(skip)
-        .limit(limit)
+//         const dos= Livres.find()
+//         .skip(skip)
+//         .limit(limit)
 
-        res.status(201).json(dos)
-    } catch (error) {
-        console.log(error)
-    }
-}
+//         res.status(201).json(dos)
+//     } catch (error) {
+//         console.log(error)
+//     }
+// }
 
 module.exports = {
     create,
@@ -118,5 +118,5 @@ module.exports = {
     UnLivre,
     updateLivre,
     deleteL,
-    paginationL
+    getLivresPagines
 }
