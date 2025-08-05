@@ -1,10 +1,17 @@
+require('dotenv').config();
 const express = require('express')
 const connectDb = require('./configs/db')
+const AutheursRoutes  = require("./routes/AutheursRoutes")
+const LivresControllers = require('./routes/LivresRoutes')
 const PORT = process.env.PORT || 5000
 
 const main  = async ()=>{
     const app  = express()
     connectDb()
+
+    app.use(express.json())
+    app.use("/auteurs",AutheursRoutes)
+    app.use("/livres", LivresControllers)
 
 
     app.listen(PORT, () => {

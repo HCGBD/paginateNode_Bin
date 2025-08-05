@@ -1,14 +1,14 @@
 const mongo = require("mongoose")
 require("dotenv").config()
 
-const connectDb = async ()=>{
+const connectDb = async () => {
     try {
-        mongo.connect(process.env.DB_URI);
+    mongo.connect("mongodb://localhost:27017/gestionBibliotheque");
         console.log("Connect DB success ");
-        
+
     } catch (error) {
         console.log("errror :", error);
-        
+
     }
 }
 

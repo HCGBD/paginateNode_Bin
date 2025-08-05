@@ -1,10 +1,25 @@
-const mongo = require('mongoose');
-const { default: mongoose } = require('mongoose');
+const { timeStamp } = require("console");
+const mongo = require("mongoose");
 
-const auteur = mongoose.Schema({
-    nom: {type: String, required: true},
-    prenom: {type: String, required: true},
-    datePublication: {type: Date},
-})
 
-module.exports = mongoose.model('Auteur', auteur);
+const autheurSchema = mongo.Schema(
+  {
+    nom: {
+      type: String,
+      required: true,
+    },
+    prenom: {
+      type: String,
+      required: true,
+    },
+    dateNaiss: {
+      type: Date,
+      required: true,
+    },
+  },
+  {
+    timeStamp,
+  }
+);
+
+module.exports = mongo.model("Auteurs",autheurSchema)
