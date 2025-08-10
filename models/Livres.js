@@ -2,6 +2,7 @@ const { timeStamp } = require("console");
 const mongo = require("mongoose");
 const { type } = require("os");
 const { ref } = require("process");
+const mongoosePaginate = require('mongoose-paginate-v2')
 
 const livreSchema = mongo.Schema(
   {
@@ -24,7 +25,9 @@ const livreSchema = mongo.Schema(
   }
 );
 
+livreSchema.plugin(mongoosePaginate);
 
-module.exports = mongo.model("Livres",livreSchema)
+
+module.exports = mongo.model("Livres", livreSchema)
 
 

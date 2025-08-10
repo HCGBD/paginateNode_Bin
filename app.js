@@ -7,6 +7,10 @@ const connectDb = require('./configs/db')
 // Importe les routes dediees aux auteurs.
 const AutheursRoutes  = require("./routes/AutheursRoutes")
 const LivresRoutes = require('./routes/LivresRoutes') 
+const UtilisateurRoutes = require('./routes/UtilisateurRoutes')
+const uploadRoutes = require('./routes/uploadRoutes')
+const helmet = require('helmet')
+const cors = require('cors')
 
 // --- Configuration du Port ---
 
@@ -22,6 +26,9 @@ const PORT = process.env.PORT || 5000
 const main  = async ()=>{
     // Cree une instance de l'application Express.
     const app  = express()
+    app.use(helmet())
+    app.use(cors())
+
     
     // Etablit la connexion a la base de donnees MongoDB.
     connectDb()
@@ -32,6 +39,7 @@ const main  = async ()=>{
     // Ce middleware analyse les corps des requetes entrantes au format JSON.
     // Il permet d'acceder facilement aux donnees envoyees par le client via `req.body`.
     app.use(express.json())
+    
 
     // --- Definition des Routes ---
 
@@ -40,6 +48,9 @@ const main  = async ()=>{
     // seront gerees par le routeur 'AutheursRoutes'.
     app.use("/auteurs",AutheursRoutes)
     app.use("/livres", LivresRoutes)
+    app.use("/utilisateurs", UtilisateurRoutes)
+    app.use('/api', uploadRoutes)
+    app.use("/uploads", express.static('/public/uploads'))
 
 
     // --- Demarrage du Serveur ---

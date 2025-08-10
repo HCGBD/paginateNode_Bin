@@ -6,7 +6,7 @@ const route = express.Router();
 
 route.post('/', LivresControllers.create);
 route.get('/', LivresControllers.getLivre)
-route.get('/paginated', LivresControllers.getLivresPagines)
+// route.get('/paginated', LivresControllers.getLivresPagines)
 route.get('/:_id', LivresControllers.UnLivre)
 route.put('/:_id', LivresControllers.updateLivre)
 route.delete('/:_id', LivresControllers.deleteL)
