@@ -4,6 +4,8 @@
 const express  = require("express")
 // Importe le controleur des auteurs, qui contient la logique metier pour chaque route.
 const AutheursControllers = require("../controllers/AutheursControllers")
+// Importe le controleur des livres pour la nouvelle fonctionnalite.
+const LivresControllers = require("../controllers/LivresControllers");
 
 // --- Initialisation du Routeur ---
 
@@ -20,6 +22,12 @@ const routes =  express.Router();
 // URL : /auteurs/
 // Controleur : AutheursControllers.create
 routes.post("/",AutheursControllers.create)
+
+// Route pour lister tous les livres d'un auteur specifique.
+// Methode HTTP : GET
+// URL : /auteurs/:_id/livres
+// NOTE : Cette route est placee avant /:_id pour s'assurer qu'elle est bien identifiee.
+routes.get("/:_id/livres", LivresControllers.listByAuteur);
 
 // Route pour recuperer un auteur specifique par son ID.
 // Methode HTTP : GET
@@ -43,10 +51,6 @@ routes.delete("/:_id",AutheursControllers.deleteA)
 // Methode HTTP : GET
 // URL : /auteurs/ (ex: /auteurs?page=1&limit=10)
 // Controleur : AutheursControllers.listPagi
-// NOTE : Cette route doit etre placee APRES les routes avec des parametres comme /:_id
-// si elles partagent la meme methode HTTP, mais comme elles sont differentes (GET vs POST, etc.), l'ordre ici est correct.
-// Cependant, la route `routes.get("/:_id", ...)` interceptera les requetes qui pourraient etre pour la pagination si un mot est mis a la place d'un id.
-// C'est pourquoi il est generalement preferable de mettre les routes les plus specifiques en premier.
 routes.get("/",AutheursControllers.listPagi)
 
 

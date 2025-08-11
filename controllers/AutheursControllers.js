@@ -21,16 +21,15 @@ const create = async (req, res) => {
     const dataInsert = { nom, prenom, dateNaiss };
     // Utilise la methode statique create de Mongoose pour creer et sauvegarder un nouvel auteur en une seule etape.
 
-    const { error, value } =  AutheurValidator.validate(req.body, {
+    const { error, value } = AutheurValidator.validate(req.body, {
       abortEarly: false,
     });
 
     if (error) {
-      const message = error.details.map((err)=>err.message)
+      const message = error.details.map((err) => err.message);
       res.status(401).json(message);
-    } 
-      const data = await Auteurs.create(value);
-    
+    }
+    const data = await Auteurs.create(value);
 
     // Renvoie une reponse avec le statut 201 (Created) et les donnees de l'auteur cree au format JSON.
     res.status(201).json(data);
@@ -82,11 +81,15 @@ const listPagi = async (req, res) => {
     // Des valeurs par defaut (page 1, limite 5) sont utilisees si les parametres ne sont pas fournis.
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 5;
+    const sortBy = req.query.sortBy || 'nom';
+    const order = req.query.order === 'desc' ? -1 : 1;
 
     // Definit les options pour la pagination.
+
     const options = {
       page,
       limit,
+      sort: { [sortBy]: order },
       lean: true, // Optimisation : renvoie des objets JS simples au lieu de documents Mongoose complets.
       customLabels: {
         // Personnalise les noms des cles dans la reponse JSON.
