@@ -32,7 +32,7 @@ Cette application est une API RESTful construite avec Node.js, Express, et Mongo
 1.  **Clonez le dépôt :**
     ```bash
     git clone <url_du_depot>
-    cd pWeek_binome
+    cd projetWeek5_GestionBibliotheque
     ```
 
 2.  **Installez les dépendances :**
